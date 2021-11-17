@@ -19,5 +19,5 @@ Copyright (C) 2021 Arya K. O.
 >
 > See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/
 
-[The full license can be found here.](https://github.com/Arya-Programmer/TypingSpeed-TUI/blob/master/LICENSE)
+[The full license can be found here.](https://github.com/Arya-Programmer/TypingSpeed-TUI/blob/master/LICENSE.md)
 
