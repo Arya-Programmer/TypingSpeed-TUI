@@ -25,18 +25,25 @@ def test_typing(window):
     curses.init_pair(11, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(12, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
-    for index in range(0, len(current_string)):
-        next_char = current_string[index+1 if index+1 < len(current_string) else index]
-        typed_chars = current_string[:index]
-        not_typed_chars = current_string[index:]
+    window.addstr(0, 0, current_string, curses.color_pair(12))
+    typed_chars = ()
+    for index in range(-1, len(current_string)):
+        next_char = current_string[index+1]
+        not_typed_chars = current_string[max(index, 0):]
 
         try:
-            window.addstr(0, 0, typed_chars, curses.color_pair(10))
-            window.addstr(index, 0, not_typed_chars, curses.color_pair(11))
+            print(list(enumerate(typed_chars)))
+            print(next_char)
+            window.addstr(0, max(index, 0), not_typed_chars, curses.color_pair(12))
+            if index >= 0:
+                for char_num, (char, color) in enumerate(typed_chars):
+                    window.addstr(0, char_num, char, curses.color_pair(color))
         except curses.error as e:
-            pass
+            "pass"
 
-        val = window.getch(0, index)
+        val = chr(window.getch(0, index+1))
+        print(val)
+        typed_chars += ((next_char, 10 if str(val) == str(next_char) else 11), )
 
 
     window.refresh()
