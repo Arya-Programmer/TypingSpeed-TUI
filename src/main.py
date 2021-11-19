@@ -13,19 +13,24 @@
 # See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with *TypingSpeed-TUI. If not, see http://www.gnu.org/licenses/
 
 import curses
+import datetime
+import math
+from essential_generators import DocumentGenerator
 from time import sleep
 
 from curses import wrapper
 
+gen = DocumentGenerator()
 curses.initscr()
 
-current_string = "Hello everyone"
+current_string = gen.sentence()
 
 
 class TypeTest:
 
     def __init__(self, window):
         # Clear screen
+        self.initial_time = datetime.datetime.now()
         self.window = window
         self.current_string = current_string
         self.window.clear()
@@ -47,14 +52,20 @@ class TypeTest:
 
     def start_test(self):
         typed_chars = ()
+        words_typed_num = 0
         for index in range(-1, len(current_string)):
             if index + 1 < len(current_string):
                 user_input = self.get_user_input(index)
+                if index == -1:
+                    self.initial_time = datetime.datetime.now()
                 typed_chars += self.colorize_user_input(index, user_input)
 
+            if typed_chars[-1][0] == " ":
+                words_typed_num += 1
+
             try:
-                print(list(enumerate(typed_chars)))
                 self.color_typed_texts(typed_chars)
+                self.update_wpm(words_typed_num)
 
             except curses.error as e:
                 "pass"
@@ -71,8 +82,10 @@ class TypeTest:
         for char_num, (char, color) in enumerate(typed_chars):
             self.window.addstr(0, char_num, char, curses.color_pair(color))
 
-    def update_wmp(self):
-        self.window.addstr(2, 0, "WMP: ", curses.color_pair(10))
+    def update_wpm(self, w_num):
+        duration = datetime.datetime.now() - self.initial_time
+        wpm = w_num/(duration.seconds/60 if duration.seconds != 0 else 1)
+        self.window.addstr(2, 0, f"WPM: {math.ceil(wpm)}", curses.color_pair(10))
 
 
 if __name__ == '__main__':
