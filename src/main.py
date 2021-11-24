@@ -16,14 +16,14 @@ import curses
 import datetime
 import math
 from essential_generators import DocumentGenerator
-from time import sleep
+from unidecode import unidecode
 
 from curses import wrapper
 
 gen = DocumentGenerator()
 curses.initscr()
 
-current_string = gen.sentence()
+current_string = gen.gen_sentence(15, 20)
 
 
 class TypeTest:
@@ -32,12 +32,14 @@ class TypeTest:
         # Clear screen
         self.initial_time = datetime.datetime.now()
         self.window = window
-        self.current_string = current_string
+        self.current_string = self.remove_non_ascii(current_string.replace("\n", " "))
+        self.continue_on_mistake = False
+
         self.window.clear()
         curses.start_color()
         self.init_custom_colors()
 
-        self.window.addstr(0, 0, current_string, curses.color_pair(12))
+        self.window.addstr(0, 0, self.current_string, curses.color_pair(12))
 
         self.start_test()
 
@@ -50,15 +52,29 @@ class TypeTest:
         curses.init_pair(11, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(12, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
+    @staticmethod
+    def remove_non_ascii(text):
+        return unidecode(text)
+
     def start_test(self):
         typed_chars = ()
         words_typed_num = 0
-        for index in range(-1, len(current_string)):
-            if index + 1 < len(current_string):
+        index = -1
+        while index < len(self.current_string):
+            if index + 1 < len(self.current_string):
                 user_input = self.get_user_input(index)
+                user_input_colored = self.colorize_user_input(index, user_input)
+
                 if index == -1:
                     self.initial_time = datetime.datetime.now()
-                typed_chars += self.colorize_user_input(index, user_input)
+
+                if not self.continue_on_mistake and user_input_colored[0][1] == 11:
+                    if user_input_colored[0][0] == self.current_string[len(typed_chars)]:
+                        typed_chars += user_input_colored
+                    continue
+
+                if user_input_colored[0][0] == self.current_string[len(typed_chars)]:
+                    typed_chars += user_input_colored
 
             if typed_chars[-1][0] == " ":
                 words_typed_num += 1
@@ -69,6 +85,8 @@ class TypeTest:
 
             except curses.error as e:
                 "pass"
+
+            index += 1
 
     def get_user_input(self, index):
         next_char_index = index + 1
@@ -84,7 +102,7 @@ class TypeTest:
 
     def update_wpm(self, w_num):
         duration = datetime.datetime.now() - self.initial_time
-        wpm = w_num/(duration.seconds/60 if duration.seconds != 0 else 1)
+        wpm = w_num / (duration.seconds / 60 if duration.seconds != 0 else 1)
         self.window.addstr(2, 0, f"WPM: {math.ceil(wpm)}", curses.color_pair(10))
 
 
