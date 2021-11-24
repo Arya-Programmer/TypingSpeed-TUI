@@ -3,12 +3,16 @@ Speed up your typing with a simple TUI program.
 
 ## Installation
 1. Clone the repository with: `git clone https://github.com/Arya-Programmer/TypingSpeed-TUI.git`
-2. Go into the folder: `cd ./repo`
+2. Go into the folder: `cd ./TypingSpeed-TUI`
 3. Install requirements: `pip install requirements.txt`
 4. Run the code with `python src/main.py` and happy hacking
 
 ## Contribution
 Planning on writing tests for those who would like to contribute to the project.
+
+## To-Do
+- [ ] Show intro before starting so user can choose different settings
+- [ ] Add a "Do you want to play again?" Prompt
 
 ## License
 Copyright (C) 2021 Arya K. O.
