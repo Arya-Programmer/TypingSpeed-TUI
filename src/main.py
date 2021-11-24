@@ -23,8 +23,6 @@ from curses import wrapper
 gen = DocumentGenerator()
 curses.initscr()
 
-current_string = gen.gen_sentence(15, 20)
-
 
 class TypeTest:
 
@@ -32,15 +30,16 @@ class TypeTest:
         # Clear screen
         self.initial_time = datetime.datetime.now()
         self.window = window
-        self.current_string = self.remove_non_ascii(current_string.replace("\n", " "))
+        self.current_string = ""
         self.continue_on_mistake = False
 
         self.window.clear()
         curses.start_color()
         self.init_custom_colors()
 
-        self.window.addstr(0, 0, self.current_string, curses.color_pair(12))
-
+        # START
+        self.generate_random_text()
+        self.show_random_text()
         self.start_test()
 
         self.window.refresh()
@@ -55,6 +54,12 @@ class TypeTest:
     @staticmethod
     def remove_non_ascii(text):
         return unidecode(text)
+
+    def show_random_text(self):
+        self.window.addstr(0, 0, self.current_string, curses.color_pair(12))
+
+    def generate_random_text(self):
+        self.current_string = self.remove_non_ascii(gen.gen_sentence(15, 20).replace("\n", ""))
 
     def start_test(self):
         typed_chars = ()
@@ -88,6 +93,8 @@ class TypeTest:
 
             index += 1
 
+        self.prompt_play_again()
+
     def get_user_input(self, index):
         next_char_index = index + 1
         return chr(self.window.getch(0, next_char_index))
@@ -104,6 +111,18 @@ class TypeTest:
         duration = datetime.datetime.now() - self.initial_time
         wpm = w_num / (duration.seconds / 60 if duration.seconds != 0 else 1)
         self.window.addstr(2, 0, f"WPM: {math.ceil(wpm)}", curses.color_pair(10))
+
+    def prompt_play_again(self):
+        self.window.clear()
+        play_again_string = "Do you want to test your typing speed again? Yes[Y]/No[Any key]"
+        self.window.addstr(0, 0, play_again_string)
+        play_again = self.get_user_input(len(play_again_string)-1).lower() == "y"
+
+        if play_again:
+            self.window.clear()
+            self.generate_random_text()
+            self.show_random_text()
+            self.start_test()
 
 
 if __name__ == '__main__':
