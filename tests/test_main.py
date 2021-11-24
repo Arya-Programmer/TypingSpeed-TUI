@@ -16,7 +16,7 @@ import curses
 from src.main import TypeTest
 
 
-class TestSum(unittest.TestCase):
+class TypeTestTest(unittest.TestCase):
     def test_init_colors(self):
         """
         Test that it initializes the colors
@@ -32,9 +32,9 @@ class TestSum(unittest.TestCase):
         self.assertEqual(curses.color_pair(12), 201326592, "Color not initialized!")
 
     # noinspection PyTypeChecker
-    def test_list_fraction(self):
+    def test_colorize_user_input(self):
         """
-        Test that it can sum a list of fractions
+        Test if the color given to user input is right
         """
         class Test:
             current_string = "Hello world"
