@@ -11,8 +11,8 @@ Speed up your typing with a simple TUI program.
 Planning on writing tests for those who would like to contribute to the project.
 
 ## To-Do
+- [x] Add a "Do you want to test your typing speed again?" Prompt
 - [ ] Show intro before starting so user can choose different settings
-- [ ] Add a "Do you want to test your typing speed again?" Prompt
 
 ## License
 Copyright (C) 2021 Arya K. O.
